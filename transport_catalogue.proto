@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package TransportCataloguePB;
+
+message Coordinates{
+        double lat = 1; // Широта
+        double lng = 2; // Долгота
+}
+
+message Stop{
+    string name = 1;
+    Coordinates coordinates = 2;
+    uint32 vertex_id = 3; //будет использоваться как индекс массива с остановками
+}
+
+message Bus{
+    string name = 1;
+    repeated uint32 stop_id_pb_array = 2; //индексы остановок (они же vertex_id)
+    uint32 unique_stops_number = 3;
+    double route_length = 4;
+    double curvature = 5;
+    bool is_roundtrip = 6;
+}
+
+message DistanceBetweenStops{
+    uint32 stop1_id = 1;
+    uint32 stop2_id = 2;
+    uint32 distance = 3;
+}
+
+message TransportCatalogue{
+    repeated Stop stops = 1;
+    repeated Bus buses = 2;
+    repeated DistanceBetweenStops distances_between_stops = 3;
+}
+
+message Point{
+        double x = 1;
+        double y = 2;
+}
+
+message Color{
+    string text = 1;
+    uint32 r = 2;
+    uint32 g = 3;
+    uint32 b = 4;
+    double a = 5;
+}
+
+message RenderSettings{
+	double width = 1; //ширина и высота изображения в пикселях
+	double height = 2;
+
+	double padding = 3; //отступ краёв карты от границ SVG-документа
+
+	double line_width = 4; //толщина линий, которыми рисуются автобусные маршруты
+	double stop_radius = 5; //радиус окружностей, которыми обозначаются остановки
+
+	uint32 bus_label_font_size = 6; //размер текста, которым написаны названия автобусных маршрутов
+	Point bus_label_offset = 7; //смещение надписи с названием маршрута относительно координат конечной остановки на карте
+
+	uint32 stop_label_font_size = 8; //размер текста, которым отображаются названия остановок
+	Point stop_label_offset = 9; //смещение названия остановки относительно её координат на карте
+
+	Color underlayer_color = 10; //цвет подложки под названиями остановок и маршрутов
+	double underlayer_width = 11; //толщина подложки под названиями остановок и маршрутов. Задаёт значение атрибута stroke-width элемента <text>
+
+	repeated Color color_palette = 12; //цветовая палитра для выбора цветов маршрутов
+}
+
+message RoutingSettings{
+	double bus_wait_time = 1; //минуты
+	double bus_velocity = 2; //километры в час
+}
+
+message AllInfo{
+    TransportCatalogue catalogue = 1;
+    RenderSettings render_settings = 2;
+    RoutingSettings routing_settings = 3;
+}
